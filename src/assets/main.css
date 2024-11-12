@@ -1,0 +1,21 @@
+body {
+  margin: 0px;
+  font-family: 'Jaldi';
+}
+
+.big-flat-button {
+  width: 100px;
+  height: 100px;
+  border-radius: 35px;
+  border-width: 0px;
+}
+
+.accept-button {
+  background-color: #D4FDAB;
+  color: #651E1E;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.registration-login-label {}
