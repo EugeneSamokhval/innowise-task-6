@@ -1,6 +1,20 @@
+@import url("base.css");
+
 body {
   margin: 0px;
   font-family: 'Jaldi';
+  height: 100vh;
+}
+
+.registration-input {
+  width: 500px;
+  height: 60px;
+  border-radius: 15px;
+  background-color: #FFF2E3;
+  border-width: 3px;
+  font-size: 24px;
+  border-color: #903434;
+  color: #903434;
 }
 
 .big-flat-button {
@@ -13,9 +27,16 @@ body {
 .accept-button {
   background-color: #D4FDAB;
   color: #651E1E;
-  font-size: 24px;
+  width: 60px;
+  height: 60px;
+  border-radius: 15px;
+  font-size: 14px;
   font-weight: bold;
   text-align: center;
 }
 
-.registration-login-label {}
+.registration-login-label {
+  font-weight: bold;
+  font-size: 24px;
+  color: #903434;
+}

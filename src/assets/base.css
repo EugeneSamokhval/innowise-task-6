@@ -1,0 +1,41 @@
+.google-logo {
+  width: 50px;
+  height: 50px;
+  display: inline;
+}
+
+.register-google-button {
+  height: 60px;
+  width: 250px;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  grid-template-columns: 1fr 50px;
+  border-width: 3px;
+  border-radius: 15px;
+  border-color: #903434;
+  background-color: #fff2e3;
+  color: #903434;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.register-bottom-buttons-layout {
+  width: 500px;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr 1fr 60px;
+}
+
+.login-to-registration-links {
+  width: 150px;
+  height: 60px;
+  align-content: center;
+  text-align: center;
+  font-size: 19px;
+  color: #F65151;
+}
+
+.login-to-registration-links:visited {
+  color: #903434;
+}
