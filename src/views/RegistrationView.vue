@@ -5,7 +5,9 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from 'firebase/auth'
-import PopUp from '@/components/icons/PopUp.vue'
+import { doc, setDoc } from 'firebase/firestore'
+import { db } from '../main'
+import PopUp from '@/components/PopUp.vue'
 export default {
   components: { PopUp },
   data() {
@@ -18,12 +20,22 @@ export default {
   methods: {
     register() {
       createUserWithEmailAndPassword(getAuth(), this.emai, this.password)
-        .then((data) => {
-          console.log('Registered:', data)
+        .then((userCredential) => {
+          const user = userCredential.user // Get the registered user object
+          console.log(user) // Debug: Log user object
+
+          // Create Firestore entry
+          return setDoc(doc(db, 'users', user.uid), {
+            username: this.emai,
+            tasks: [],
+          })
+        })
+        .then(() => {
+          // Redirect after Firestore entry is created
           this.$router.push('/')
         })
         .catch((error) => {
-          console.log(error)
+          console.log(error) // Debug: Log the error
           this.errormessage = this.HandleRegisterErrors(error.message)
           this.$refs.popup.openPopup()
         })
@@ -32,15 +44,26 @@ export default {
       const provider = new GoogleAuthProvider()
       signInWithPopup(getAuth(), provider)
         .then((result) => {
-          console.log(result.user)
+          const user = result.user // Get the authenticated user object
+          console.log(user) // Debug: Log user object
+
+          // Create Firestore entry
+          return setDoc(doc(db, 'users', user.uid), {
+            username: this.email, // Use user email from Google Auth
+            tasks: [],
+          })
+        })
+        .then(() => {
+          // Redirect after Firestore entry is created
           this.$router.push('/')
         })
         .catch((error) => {
-          console.log(error)
+          console.log(error) // Debug: Log the error
           this.errormessage = this.HandleRegisterErrors(error.message)
           this.$refs.popup.openPopup()
         })
     },
+
     HandleRegisterErrors(errorcode) {
       let currentErrorMessage = errorcode
       errorcode = errorcode.replace('Firebase: Error (', '').replace(').', '')

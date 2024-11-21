@@ -1,24 +1,23 @@
 <script>
-import PopUp from '@/components/icons/PopUp.vue'
+import PopUp from '@/components/PopUp.vue'
 import {
   getAuth,
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
 } from 'firebase/auth'
-
 export default {
   components: { PopUp },
   data() {
     return {
-      emai: '',
+      email: '',
       password: '',
       errormessage: '',
     }
   },
   methods: {
     signin() {
-      signInWithEmailAndPassword(getAuth(), this.emai, this.password)
+      signInWithEmailAndPassword(getAuth(), this.email, this.password)
         .then((data) => {
           console.log('Signed in:', data)
           this.$router.push('/')
