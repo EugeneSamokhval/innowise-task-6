@@ -2,6 +2,9 @@
 export default {
   props: ['calendarEntries'],
   async setup() {},
+  data() {
+    return { selectedDay: null }
+  },
   methods: {
     getWeekStringFromNumber(weekNum) {
       switch (weekNum) {
@@ -29,6 +32,22 @@ export default {
       }
       return false
     },
+    scrollRightFar() {
+      const calendarElementsContainer = document.getElementById('calendar-days-container')
+      calendarElementsContainer.scrollLeft += 500
+    },
+    scrollLeftFar() {
+      const calendarElementsContainer = document.getElementById('calendar-days-container')
+      calendarElementsContainer.scrollLeft -= 500
+    },
+    handleSelection(event, entry) {
+      if (this.selectedDay) {
+        this.selectedDay.domElement.classList.remove('selected-entry')
+      }
+      this.selectedDay = { domElement: event.target, elementData: entry }
+      event.target.classList.add('selected-entry')
+      console.log('This entry has been selected:', this.selectedDay)
+    },
   },
   mounted() {
     const calendarElementsContainer = document.getElementById('calendar-days-container')
@@ -38,11 +57,19 @@ export default {
 </script>
 <template>
   <div :calendarEntries id="calendar-component">
-    <img id="calendar-scroll-left" src="../assets/menu-left.svg" width="48" height="48" />
+    <img
+      id="calendar-scroll-left"
+      src="../assets/menu-left.svg"
+      width="48"
+      height="48"
+      @click="scrollLeftFar"
+    />
     <div id="calendar-days-container">
       <template v-for="entry in calendarEntries" :key="entry.id">
         <div
+          :entry
           class="calendar-entry"
+          @click.self="(e) => handleSelection(e, entry)"
           :class="{ outdated: entry.outdated === 1, current: entry.outdated === -1 }"
         >
           <span class="calendar-entry-day" v-text="entry.day"></span>
@@ -66,8 +93,15 @@ export default {
         </div>
       </template>
     </div>
-    <img id="calendar-scroll-right" src="../assets/menu-right.svg" width="48" height="48" />
+    <img
+      id="calendar-scroll-right"
+      src="../assets/menu-right.svg"
+      width="48"
+      height="48"
+      @click="scrollRightFar"
+    />
   </div>
+  <slot :choosenDay></slot>
 </template>
 <style scoped>
 .calendar-entry {
@@ -124,6 +158,7 @@ export default {
 }
 #calendar-days-container {
   overflow-x: visible;
+  scroll-behavior: smooth;
   width: calc(100vw - 96px);
   height: inherit;
   display: flex;
@@ -131,5 +166,8 @@ export default {
   overflow-x: auto;
   gap: 5px;
   align-items: center;
+}
+.selected-entry {
+  border: 3px solid #f65151;
 }
 </style>
