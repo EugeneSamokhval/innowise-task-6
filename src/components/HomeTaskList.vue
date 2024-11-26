@@ -21,7 +21,21 @@ export default {
     addNewTaskPopupOpen() {
       this.$refs.popup.openPopup()
     },
-
+    async sendIncompleteTasksForward() {
+      if (this.selectedDay.outdated !== 1) {
+        const currentUserDoc = getDoc(doc(db, 'users', this.user))
+        let currentUserData = (await currentUserDoc).data()
+        const listOfIndexes = []
+        const incompleteTasks = this.selectedDay.tasks.filter((task) => !task.completed)
+        for (let task of incompleteTasks) {
+          let index = currentUserData.tasks.findIndex((ptask) => ptask._id === task._id)
+          listOfIndexes.push(task)
+          currentUserData.tasks[index].day += 86400000
+        }
+        await setDoc(doc(db, 'users', this.user), currentUserData)
+        this.$emit('send-tasks-forward')
+      }
+    },
     async addNewTask(title) {
       try {
         const UniqueId = 'task_' + Date.now()
@@ -96,7 +110,11 @@ export default {
       </li>
     </ul>
     <div id="task-list-buttons-container">
-      <button class="flat-home-button" id="transfer-tasks-button">
+      <button
+        class="flat-home-button"
+        id="transfer-tasks-button"
+        @click="sendIncompleteTasksForward"
+      >
         <img src="../assets/arrow-right-thin.svg" />
       </button>
       <button @click="addNewTaskPopupOpen" class="flat-home-button" id="add-task-button">

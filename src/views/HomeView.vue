@@ -51,6 +51,13 @@ export default {
       this.selectedDay.tasks[index].completed = !this.selectedDay.tasks[index].completed
       console.log('Current tasks', this.selectedDay.tasks)
     },
+    handleSendTasksForward() {
+      const tasksToSend = this.selectedDay.tasks.filter((task) => !task.completed)
+      this.selectedDay.tasks = this.selectedDay.tasks.filter((task) => task.completed)
+      let indexOfEntrie = this.calendarData.findIndex((entry) => entry === this.selectedDay)
+      if (indexOfEntrie < this.calendarData.length)
+        for (let task in tasksToSend) this.calendarData[indexOfEntrie + 1].tasks.push(task)
+    },
   },
   async mounted() {
     try {
@@ -86,6 +93,7 @@ export default {
     <HomeTaskList
       @add-task="(entry) => selectedDay.tasks.push(entry)"
       @task-status-change="handleTaskStatusChange"
+      @send-tasks-forward="handleSendTasksForward"
       :selectedDay
     ></HomeTaskList>
   </main>
