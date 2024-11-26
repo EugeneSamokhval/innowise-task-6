@@ -23,6 +23,14 @@ const router = createRouter({
       name: 'Login page',
       component: () => import('../views/LoginView.vue'),
     },
+    {
+      path: '/taskeditor',
+      name: 'Task editor',
+      component: () => import('../views/TaskEditView.vue'),
+      meta: {
+        requiresAuth: true,
+      },
+    },
   ],
 })
 const getCurrentUser = () => {

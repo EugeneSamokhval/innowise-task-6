@@ -25,6 +25,7 @@ export default {
     async addNewTask(title) {
       try {
         const UniqueId = 'task_' + Date.now()
+        console.log(this.selectedDay)
         const task = {
           _id: UniqueId,
           title: title,
@@ -86,7 +87,12 @@ export default {
         <span :ref="task._id" @click="changeState(task._id)" class="custom-checkbox">
           <img v-show="task.completed" src="../assets/check-bold.svg" />
         </span>
-        <a class="list-item-label" :for="task.title">{{ task.title }}</a>
+        <a
+          @click="$router.push({ path: '/taskeditor', query: { id: task._id, user_id: user } })"
+          class="list-item-label"
+          :for="task.title"
+          >{{ task.title }}</a
+        >
       </li>
     </ul>
     <div id="task-list-buttons-container">

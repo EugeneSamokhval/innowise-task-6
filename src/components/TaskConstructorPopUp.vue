@@ -5,7 +5,7 @@ export default {
   },
   methods: {
     initTaskCreation() {
-      this.$emit('add-new-task', this.taskName)
+      if (this.taskName.length > 0) this.$emit('add-new-task', this.taskName)
       console.log('Task name:', this.taskName)
       this.closePopup()
     },

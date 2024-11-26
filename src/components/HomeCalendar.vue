@@ -83,10 +83,10 @@ export default {
           ></span>
           <div :entry class="calendar-task-completion-status-box">
             <svg v-show="entry.tasks.length" width="10" height="10" class="activity-status-1">
-              <circle r="5" cx="5" cy="5" fill="black"></circle>
+              <circle r="5" cx="5" cy="5" fill="#651E1E"></circle>
             </svg>
             <svg v-show="anyCompletedTasks(entry)" width="10" height="10" class="activity-status-2">
-              <circle r="5" cx="5" cy="5" fill="red"></circle>
+              <circle r="5" cx="5" cy="5" fill="#F65151"></circle>
             </svg>
           </div>
         </div>

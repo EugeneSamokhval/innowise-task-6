@@ -21,11 +21,13 @@ export async function generateYearData(tasksData) {
         day: day.getDate(),
         tasks:
           data.tasks.length > 0
-            ? data.tasks.filter((x) => {
-                return day.getTime() - 43200 <= x.day.seconds <= day.getTime() + 43200
-              })
+            ? data.tasks
+                .filter(
+                  (x) => day.getTime() - 43200000 <= x.day && x.day <= day.getTime() + 43200000,
+                )
+                .map((task) => ({ ...task }))
             : [],
-        date: day.getDate(),
+        date: day.getTime(),
         outdated: getCurrentTimePosition(day, today),
         weekday: day.getDay(),
         month: day.getMonth(),
