@@ -46,12 +46,17 @@ export default {
       }
       this.selectedDay = { domElement: event.target, elementData: entry }
       event.target.classList.add('selected-entry')
+      this.$emit('element-chosen', this.selectedDay)
       console.log('This entry has been selected:', this.selectedDay)
     },
   },
-  mounted() {
+  async mounted() {
     const calendarElementsContainer = document.getElementById('calendar-days-container')
     calendarElementsContainer.scrollTo(3905, 0)
+    const todayElement = document.getElementsByClassName('current')[0]
+    const clickEvent = new Event('click')
+    todayElement.dispatchEvent(clickEvent)
+    console.log('Calendar entries:', this.calendarEntries)
   },
 }
 </script>
@@ -67,7 +72,6 @@ export default {
     <div id="calendar-days-container">
       <template v-for="entry in calendarEntries" :key="entry.id">
         <div
-          :entry
           class="calendar-entry"
           @click.self="(e) => handleSelection(e, entry)"
           :class="{ outdated: entry.outdated === 1, current: entry.outdated === -1 }"
@@ -77,17 +81,12 @@ export default {
             class="calendar-entry-weekday"
             v-text="getWeekStringFromNumber(entry.weekday)"
           ></span>
-          <div class="calendar-task-completion-status-box">
-            <svg
-              v-show="entry.tasks.length && anyCompletedTasks(entry)"
-              width="10"
-              height="10"
-              class="activity-status-1"
-            >
+          <div :entry class="calendar-task-completion-status-box">
+            <svg v-show="entry.tasks.length" width="10" height="10" class="activity-status-1">
               <circle r="5" cx="5" cy="5" fill="black"></circle>
             </svg>
             <svg v-show="anyCompletedTasks(entry)" width="10" height="10" class="activity-status-2">
-              <circle r="5" cx="5" cy="5" fill="black"></circle>
+              <circle r="5" cx="5" cy="5" fill="red"></circle>
             </svg>
           </div>
         </div>
@@ -101,7 +100,6 @@ export default {
       @click="scrollRightFar"
     />
   </div>
-  <slot :choosenDay></slot>
 </template>
 <style scoped>
 .calendar-entry {
@@ -150,7 +148,7 @@ export default {
 #calendar-component {
   background-color: #fce0c0;
   width: 100vw;
-  height: 90px;
+  height: 100px;
   display: grid;
   grid-template-columns: 48px 1fr 48px;
   grid-template-rows: 1fr;
@@ -164,6 +162,8 @@ export default {
   display: flex;
   flex-flow: row;
   overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-gutter: stable;
   gap: 5px;
   align-items: center;
 }

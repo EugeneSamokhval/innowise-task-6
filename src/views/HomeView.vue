@@ -6,8 +6,7 @@ import { db } from '../main.js'
 import { getAuth } from 'firebase/auth'
 import HomeTaskList from '@/components/HomeTaskList.vue'
 
-async function getUserData() {
-  const userId = getAuth().currentUser?.uid
+async function getUserData(userId) {
   if (!userId) {
     console.error('No user is logged in.')
     return null
@@ -35,11 +34,28 @@ export default {
     return {
       calendarData: [],
       userData: [],
+      selectedDay: { tasks: [] },
+      userId: '',
     }
+  },
+  provide() {
+    const id = getAuth().currentUser?.uid
+    if (id) return { user: getAuth().currentUser?.uid }
+  },
+  methods: {
+    setSelectedDay(element) {
+      this.selectedDay = element.elementData
+      console.log('Current:', element)
+    },
+    handleTaskStatusChange(index) {
+      this.selectedDay.tasks[index].completed = !this.selectedDay.tasks[index].completed
+      console.log('Current tasks', this.selectedDay.tasks)
+    },
   },
   async mounted() {
     try {
-      const fetchedUserData = await getUserData()
+      const userId = getAuth().currentUser?.uid
+      const fetchedUserData = await getUserData(userId)
       if (fetchedUserData) {
         this.userData = fetchedUserData
         this.calendarData = await generateYearData(fetchedUserData)
@@ -63,17 +79,26 @@ export default {
         :calendarData
         v-if="calendarData.length"
         :calendarEntries="calendarData"
-      ></HomeCalendar>
+        @element-chosen="(item) => setSelectedDay(item)"
+      >
+      </HomeCalendar>
     </Suspense>
-    <HomeTaskList></HomeTaskList>
+    <HomeTaskList
+      @add-task="(entry) => selectedDay.tasks.push(entry)"
+      @task-status-change="handleTaskStatusChange"
+      :selectedDay
+    ></HomeTaskList>
   </main>
 </template>
 
-<style scoped>
+<style>
 main {
   height: calc(100vh - 80px);
   width: 100vw;
   overflow-x: hidden;
   background-color: #ffebd4;
+}
+header {
+  grid-template-columns: 1fr 48px 117px;
 }
 </style>

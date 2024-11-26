@@ -40,7 +40,6 @@ header {
   background-color: #fff2e3;
   height: 80px;
   display: grid;
-  grid-template-columns: 1fr 48px 117px;
   align-items: center;
   justify-content: center;
 }
@@ -48,10 +47,14 @@ header {
   color: #903434;
   font-size: 36px;
   margin: 0px;
+  position: absolute;
+  left: auto;
+  width: 100vw;
   text-align: center;
 }
 #notification-bell {
-  float: right;
+  margin-left: auto;
+  grid-column: span 2;
 }
 #dropdown-menu {
   margin-right: 36px;

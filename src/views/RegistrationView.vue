@@ -7,7 +7,7 @@ import {
 } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
 import { db } from '../main'
-import PopUp from '@/components/PopUp.vue'
+import PopUp from '@/components/InfoPopUp.vue'
 export default {
   components: { PopUp },
   data() {
@@ -21,21 +21,19 @@ export default {
     register() {
       createUserWithEmailAndPassword(getAuth(), this.emai, this.password)
         .then((userCredential) => {
-          const user = userCredential.user // Get the registered user object
-          console.log(user) // Debug: Log user object
+          const user = userCredential.user
+          console.log(user)
 
-          // Create Firestore entry
           return setDoc(doc(db, 'users', user.uid), {
             username: this.emai,
             tasks: [],
           })
         })
         .then(() => {
-          // Redirect after Firestore entry is created
           this.$router.push('/')
         })
         .catch((error) => {
-          console.log(error) // Debug: Log the error
+          console.log(error)
           this.errormessage = this.HandleRegisterErrors(error.message)
           this.$refs.popup.openPopup()
         })
@@ -44,21 +42,19 @@ export default {
       const provider = new GoogleAuthProvider()
       signInWithPopup(getAuth(), provider)
         .then((result) => {
-          const user = result.user // Get the authenticated user object
-          console.log(user) // Debug: Log user object
+          const user = result.user
+          console.log(user)
 
-          // Create Firestore entry
           return setDoc(doc(db, 'users', user.uid), {
-            username: this.email, // Use user email from Google Auth
+            username: this.email,
             tasks: [],
           })
         })
         .then(() => {
-          // Redirect after Firestore entry is created
           this.$router.push('/')
         })
         .catch((error) => {
-          console.log(error) // Debug: Log the error
+          console.log(error)
           this.errormessage = this.HandleRegisterErrors(error.message)
           this.$refs.popup.openPopup()
         })

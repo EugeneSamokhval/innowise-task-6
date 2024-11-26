@@ -1,5 +1,5 @@
 <script>
-import PopUp from '@/components/PopUp.vue'
+import PopUp from '@/components/InfoPopUp.vue'
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -17,6 +17,7 @@ export default {
   },
   methods: {
     signin() {
+      console.log('email:', this.email, ' password:', this.password)
       signInWithEmailAndPassword(getAuth(), this.email, this.password)
         .then((data) => {
           console.log('Signed in:', data)
@@ -87,9 +88,9 @@ export default {
 <template>
   <div id="login-form">
     <label class="registration-login-label" for="user-name-input">Username</label>
-    <input class="registration-input" type="text" name="user-name-input" />
+    <input class="registration-input" type="text" name="user-name-input" v-model="email" />
     <label class="registration-login-label" for="password-input">Password</label>
-    <input class="registration-input" type="password" name="password-input" />
+    <input class="registration-input" type="password" name="password-input" v-model="password" />
     <div class="register-bottom-buttons-layout">
       <button @click="signInWithGoogle" class="register-google-button">
         <span>Login with google</span
