@@ -9,11 +9,13 @@ export default {
   inject: ['user'],
   methods: {
     async changeState(taskId) {
-      const taskIndex = this.selectedDay.tasks.findIndex((item) => item._id === taskId)
-      this.$emit('task-status-change', taskIndex)
       const userLink = doc(db, 'users', this.user)
       const updatedArray = (await getDoc(userLink)).data()
-
+      const taskIndex = updatedArray.tasks.findIndex((item) => item._id === taskId)
+      this.$emit(
+        'task-status-change',
+        this.selectedDay.tasks.findIndex((item) => item._id === taskId),
+      )
       updatedArray.tasks[taskIndex].completed = !updatedArray.tasks[taskIndex].completed
 
       await setDoc(userLink, updatedArray)
