@@ -1,5 +1,5 @@
 <script>
-import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
 import { getDoc, doc, setDoc } from 'firebase/firestore'
 import { db } from '../main'
 
@@ -22,6 +22,13 @@ export default {
       userData.theme = this.current
 
       await setDoc(doc(db, 'users', id), userData)
+    },
+    signOutHandler() {
+      const auth = getAuth()
+      if (auth) {
+        signOut(auth)
+      }
+      this.$router.push('/login')
     },
   },
   watch: {
@@ -72,9 +79,9 @@ export default {
         <input name="cold" type="radio" value="cold" v-model="current" />
         <label for="cold"> Cold theme</label>
       </div>
-      <button class="log-out-button">
+      <button @click="signOutHandler" class="log-out-button">
         <img width="48px" height="48px" src="../assets/log-out.svg" />
-        <p class="log-out-button-text">Log Out</p>
+        <p class="log-out-button-text">Sign Out</p>
       </button>
     </div>
   </div>
