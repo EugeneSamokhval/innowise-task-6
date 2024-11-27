@@ -1,0 +1,84 @@
+:root {
+  --primary-color: #903434;
+  --secondary-color: #651E1E;
+  --background-color: #fff2e3;
+  --accent-color: #F65151;
+  --border-color: #ffffff;
+  --light-color: #D4FDAB;
+  --muted-color: #ffebd4;
+  --dark-color: #1e1e1e;
+  --info-color: #ffc79c;
+  --subtle-color: #fce0c0;
+  --highlight-color: #f9af77;
+  --svg-filter: brightness(0) saturate(100%) invert(12%) sepia(52%) saturate(3034%) hue-rotate(343deg) brightness(92%) contrast(89%);
+}
+
+[data-theme="warm"] {
+  --primary-color: #903434;
+  --secondary-color: #651E1E;
+  --background-color: #fff2e3;
+  --border-color: #ffffff;
+  --accent-color: #F65151;
+  --light-color: #D4FDAB;
+  --muted-color: #ffebd4;
+  --dark-color: #1e1e1e;
+  --info-color: #ffc79c;
+  --subtle-color: #fce0c0;
+  --highlight-color: #f9af77;
+  --svg-filter: brightness(0) saturate(100%) invert(12%) sepia(52%) saturate(3034%) hue-rotate(343deg) brightness(92%) contrast(89%);
+
+}
+
+[data-theme="white"] {
+  --background-color: #cfcfcf;
+  --text-color: #000000;
+  --primary-color: #000000;
+  --secondary-color: #FFA500;
+  --border-color: #FFA500;
+  --accent-color: #f69351;
+  --button-color: #FFA500;
+  --light-color: #D4FDAB;
+  --muted-color: #ffffff;
+  --dark-color: #ce5403;
+  --info-color: #ffc79c;
+  --subtle-color: #e4e4e4;
+  --highlight-color: #fff6a9;
+  --svg-filter: brightness(0) saturate(100%) invert(0%) sepia(94%) saturate(0%) hue-rotate(228deg) brightness(94%) contrast(106%);
+}
+
+[data-theme="dark"] {
+  --background-color: #321252;
+  --text-color: #291339;
+  --primary-color: #d18503;
+  --border-color: #f5d295;
+
+  --secondary-color: #d16405;
+  --accent-color: #ecb85d;
+  --button-color: #FFA500;
+  /* Orange */
+  --light-color: #70319c;
+  --muted-color: #3a0d5e;
+  --dark-color: #1e1e1e;
+  --info-color: #4a0058;
+  --subtle-color: #35174b;
+  --highlight-color: #321249;
+  --svg-filter: brightness(0) saturate(100%) invert(36%) sepia(90%) saturate(1108%) hue-rotate(6deg) brightness(95%) contrast(96%);
+}
+
+[data-theme="cold"] {
+  --background-color: #057dcd;
+  --text-color: #d3c0ff;
+  --primary-color: #1e3d58;
+  --secondary-color: #a881ff;
+  --accent-color: #003feb;
+  --button-color: #8400ff;
+  --border-color: #ffffff;
+
+  --light-color: #9362ff;
+  --muted-color: #e8eef1;
+  --dark-color: #43b0f1;
+  --info-color: #b697ff;
+  --subtle-color: #bfdff1;
+  --highlight-color: #80c6ff;
+  --svg-filter: brightness(0) saturate(100%) invert(9%) sepia(96%) saturate(5266%) hue-rotate(237deg) brightness(79%) contrast(102%);
+}

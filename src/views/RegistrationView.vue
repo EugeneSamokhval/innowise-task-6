@@ -22,7 +22,6 @@ export default {
       createUserWithEmailAndPassword(getAuth(), this.emai, this.password)
         .then((userCredential) => {
           const user = userCredential.user
-          console.log(user)
 
           return setDoc(doc(db, 'users', user.uid), {
             username: this.emai,
@@ -33,7 +32,6 @@ export default {
           this.$router.push('/')
         })
         .catch((error) => {
-          console.log(error)
           this.errormessage = this.HandleRegisterErrors(error.message)
           this.$refs.popup.openPopup()
         })
@@ -43,7 +41,6 @@ export default {
       signInWithPopup(getAuth(), provider)
         .then((result) => {
           const user = result.user
-          console.log(user)
 
           return setDoc(doc(db, 'users', user.uid), {
             username: this.email,
@@ -54,7 +51,6 @@ export default {
           this.$router.push('/')
         })
         .catch((error) => {
-          console.log(error)
           this.errormessage = this.HandleRegisterErrors(error.message)
           this.$refs.popup.openPopup()
         })
@@ -117,6 +113,6 @@ export default {
   justify-items: center;
   align-content: center;
   height: calc(100vh - 80px);
-  background-color: #ffebd4;
+  background-color: var(--muted-color);
 }
 </style>

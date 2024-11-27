@@ -47,7 +47,6 @@ export default {
       this.selectedDay = { domElement: event.target, elementData: entry }
       event.target.classList.add('selected-entry')
       this.$emit('element-chosen', this.selectedDay)
-      console.log('This entry has been selected:', this.selectedDay)
     },
   },
   async mounted() {
@@ -56,7 +55,6 @@ export default {
     const todayElement = document.getElementsByClassName('current')[0]
     const clickEvent = new Event('click')
     todayElement.dispatchEvent(clickEvent)
-    console.log('Calendar entries:', this.calendarEntries)
   },
 }
 </script>
@@ -86,7 +84,7 @@ export default {
               <circle r="5" cx="5" cy="5" fill="#651E1E"></circle>
             </svg>
             <svg v-show="anyCompletedTasks(entry)" width="10" height="10" class="activity-status-2">
-              <circle r="5" cx="5" cy="5" fill="#F65151"></circle>
+              <circle r="5" cx="5" cy="5" fill="var(--accent-color)"></circle>
             </svg>
           </div>
         </div>
@@ -105,12 +103,12 @@ export default {
 .calendar-entry {
   width: 80px;
   height: 80px;
-  color: #903434;
+  color: var(--primary-color);
   font-weight: bold;
   font-size: 24px;
   font-family: 'Jaldi';
   border-radius: 15px;
-  background-color: #ffebd4;
+  background-color: var(--muted-color);
   display: grid;
   align-items: center;
   justify-items: center;
@@ -140,13 +138,13 @@ export default {
   justify-items: center;
 }
 .outdated {
-  background-color: #1e1e1e;
+  background-color: var(--dark-color);
 }
 .current {
-  background-color: #ffc79c;
+  background-color: var(--info-color);
 }
 #calendar-component {
-  background-color: #fce0c0;
+  background-color: var(--subtle-color);
   width: 100vw;
   height: 100px;
   display: grid;
@@ -168,6 +166,6 @@ export default {
   align-items: center;
 }
 .selected-entry {
-  border: 3px solid #f65151;
+  border: 3px solid var(--accent-color);
 }
 </style>

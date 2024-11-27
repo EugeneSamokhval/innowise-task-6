@@ -17,10 +17,8 @@ export default {
   },
   methods: {
     signin() {
-      console.log('email:', this.email, ' password:', this.password)
       signInWithEmailAndPassword(getAuth(), this.email, this.password)
-        .then((data) => {
-          console.log('Signed in:', data)
+        .then(() => {
           this.$router.push('/')
         })
         .catch((error) => {
@@ -31,12 +29,10 @@ export default {
     signInWithGoogle() {
       const provider = new GoogleAuthProvider()
       signInWithPopup(getAuth(), provider)
-        .then((result) => {
-          console.log(result.user)
+        .then(() => {
           this.$router.push('/')
         })
         .catch((error) => {
-          console.log(error)
           this.errormessage = this.HandleRegisterErrors(error.message)
           this.$refs.popup.openPopup()
         })
@@ -113,6 +109,6 @@ export default {
   align-content: center;
   gap: 15px;
   height: calc(100vh - 80px);
-  background-color: #ffebd4;
+  background-color: var(--muted-color);
 }
 </style>

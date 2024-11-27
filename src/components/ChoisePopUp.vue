@@ -35,10 +35,10 @@ export default {
   width: 80px;
   height: 30px;
   border: none;
-  background: #d4fdab;
+  background: var(--light-color);
   border-radius: 10px;
   font-size: 20px;
   cursor: pointer;
-  color: #651e1e;
+  color: var(--secondary-color);
 }
 </style>

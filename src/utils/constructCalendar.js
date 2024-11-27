@@ -2,7 +2,6 @@ export async function generateYearData(tasksData) {
   try {
     const data = await tasksData
 
-    console.log('query:', data, '\n')
     const yearData = []
     const today = new Date()
     const startDate = new Date(today)
@@ -12,7 +11,7 @@ export async function generateYearData(tasksData) {
       else if (currentChosen < baseTime) return 1
       else return -1
     }
-    console.log(data)
+
     for (let i = 0; i < 365; i++) {
       const day = new Date(startDate)
       day.setDate(startDate.getDate() + i)
@@ -34,9 +33,7 @@ export async function generateYearData(tasksData) {
         id: i,
       })
     }
-    console.log(yearData)
+
     return yearData
-  } catch (e) {
-    console.log('Error during calendar creation: ', e)
-  }
+  } catch (e) {}
 }

@@ -1,14 +1,17 @@
 <script>
 import { RouterView } from 'vue-router'
+import MenuDropDown from './components/MenuDropdown.vue'
 
 export default {
-  components: { RouterView },
+  components: { RouterView, MenuDropDown },
   methods: {
     isNotSignInRoute() {
-      console.log(this.$route.name)
       if (['Login page', 'Registration page'].includes(this.$route.name)) {
         return false
       } else return true
+    },
+    openMenu() {
+      this.$refs.menu.showMenu()
     },
   },
 }
@@ -17,53 +20,26 @@ export default {
 <template>
   <header>
     <h1 id="page-title">{{ $route.name }}</h1>
-    <img
-      id="notification-bell"
-      v-if="isNotSignInRoute()"
-      src="./assets/bell.svg"
-      width="48px"
-      height="48px"
-    />
-    <img
-      id="dropdown-menu"
-      v-if="isNotSignInRoute()"
-      src="./assets/menu.svg"
-      height="48px"
-      width="48px"
-    />
+    <MenuDropDown v-if="isNotSignInRoute()" ref="menu"></MenuDropDown>
   </header>
   <RouterView />
 </template>
 
 <style scoped>
 header {
-  background-color: #fff2e3;
+  background-color: var(--background-color);
   height: 80px;
   display: grid;
   align-items: center;
   justify-content: center;
 }
 #page-title {
-  color: #903434;
+  color: var(--primary-color);
   font-size: 36px;
   margin: 0px;
   position: absolute;
   left: auto;
   width: 100vw;
   text-align: center;
-}
-#notification-bell {
-  margin-left: auto;
-  grid-column: span 2;
-}
-#dropdown-menu {
-  margin-right: 36px;
-  margin-left: 33px;
-  float: right;
-}
-@media (max-width: 762px) {
-  header {
-    max-height: 80px;
-  }
 }
 </style>

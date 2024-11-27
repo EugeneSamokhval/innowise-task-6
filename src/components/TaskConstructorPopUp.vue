@@ -6,7 +6,7 @@ export default {
   methods: {
     initTaskCreation() {
       if (this.taskName.length > 0) this.$emit('add-new-task', this.taskName)
-      console.log('Task name:', this.taskName)
+
       this.closePopup()
     },
     openPopup() {
@@ -70,14 +70,14 @@ export default {
   height: 45px;
   border-radius: 15px;
   font-weight: bold;
-  color: #903434;
+  color: var(--primary-color);
   cursor: pointer;
   border-width: 0px;
 }
 #submit-task-button {
-  background-color: #d4fdab;
+  background-color: var(--light-color);
 }
 #cancel-task-submition-button {
-  background-color: #f65151;
+  background-color: var(--accent-color);
 }
 </style>

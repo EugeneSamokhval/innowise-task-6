@@ -13,9 +13,9 @@ export default {
       this.$emit('task-status-change', taskIndex)
       const userLink = doc(db, 'users', this.user)
       const updatedArray = (await getDoc(userLink)).data()
-      console.log(updatedArray)
+
       updatedArray.tasks[taskIndex].completed = !updatedArray.tasks[taskIndex].completed
-      console.log('Updated array:', updatedArray)
+
       await setDoc(userLink, updatedArray)
     },
     addNewTaskPopupOpen() {
@@ -39,7 +39,7 @@ export default {
     async addNewTask(title) {
       try {
         const UniqueId = 'task_' + Date.now()
-        console.log(this.selectedDay)
+
         const task = {
           _id: UniqueId,
           title: title,
@@ -48,14 +48,14 @@ export default {
           completed: false,
         }
         this.$emit('add-task', task)
-        console.log('Task:', task, '\nUser:', this.user)
+
         const userReference = doc(db, 'users', this.user)
         const userTasks = (await getDoc(userReference)).data()
-        console.log(userTasks)
+
         userTasks['tasks'].push(task)
         await setDoc(userReference, userTasks)
       } catch (e) {
-        console.log('Error during firebase update:', e)
+        console.log(e)
       }
     },
   },
@@ -64,7 +64,6 @@ export default {
       return this.selectedDay ? this.selectedDay.tasks.length : 0
     },
     chosenDayString() {
-      console.log('Day of the month processing', this.selectedDay)
       const monthsMap = new Map([
         [0, 'January'],
         [1, 'February'],
@@ -79,7 +78,7 @@ export default {
         [10, 'November'],
         [11, 'December'],
       ])
-      console.log(monthsMap)
+
       if (this.selectedDay) {
         const result = monthsMap.get(this.selectedDay.month) + ' ' + this.selectedDay.day
         return result
@@ -109,18 +108,12 @@ export default {
         >
       </li>
     </ul>
-    <div id="task-list-buttons-container">
-      <button
-        class="flat-home-button"
-        id="transfer-tasks-button"
-        @click="sendIncompleteTasksForward"
-      >
-        <img src="../assets/arrow-right-thin.svg" />
-      </button>
-      <button @click="addNewTaskPopupOpen" class="flat-home-button" id="add-task-button">
-        <img src="../assets/plus.svg" />
-      </button>
-    </div>
+    <button class="flat-home-button" id="transfer-tasks-button" @click="sendIncompleteTasksForward">
+      <img src="../assets/arrow-right-thin.svg" />
+    </button>
+    <button @click="addNewTaskPopupOpen" class="flat-home-button" id="add-task-button">
+      <img src="../assets/plus.svg" />
+    </button>
   </div>
   <TaskConstructorPopUp @add-new-task="addNewTask" ref="popup"> </TaskConstructorPopUp>
 </template>
@@ -130,12 +123,12 @@ export default {
   width: 48px;
   height: 48px;
   border-radius: 5px;
-  border: 5px solid #903434;
+  border: 5px solid var(--primary-color);
   position: relative;
   background-color: transparent;
 }
 .list-item-label {
-  color: #651e1e;
+  color: var(--secondary-color);
   font-size: 24px;
   font-weight: bold;
 }
@@ -164,19 +157,24 @@ export default {
   grid-template-columns: 1fr 1fr;
 }
 #add-task-button {
-  background-color: #f65151;
-  margin: 5px;
-  margin-left: auto;
+  background-color: var(--accent-color);
+  position: fixed;
+  right: 15px;
+  bottom: 15px;
 }
 #transfer-tasks-button {
-  background-color: #f9af77;
-  margin: 5px;
+  background-color: var(--highlight-color);
+  position: fixed;
+  bottom: 15px;
+  left: 15px;
 }
 #task-list-layout {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 52px 1fr 100px;
   width: 100vw;
+  height: fit-content;
+  overflow-y: hidden;
 }
 #tasks-list {
   height: calc(100vh - 355px);
@@ -193,13 +191,13 @@ export default {
   text-align: start;
   margin: 0px;
   margin-left: 30px;
-  color: #f65151;
+  color: var(--accent-color);
 }
 
 #tasks-date {
   text-align: end;
   margin: 3px;
   margin-right: 26px;
-  color: #903434;
+  color: var(--primary-color);
 }
 </style>

@@ -1,6 +1,6 @@
 <script>
 import HomeCalendar from '@/components/HomeCalendar.vue'
-import { generateYearData } from '@/logic/constructCalendar.js'
+import { generateYearData } from '@/utils/constructCalendar.js'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../main.js'
 import { getAuth } from 'firebase/auth'
@@ -12,12 +12,9 @@ async function getUserData(userId) {
     return null
   }
 
-  console.log('Fetching data for user ID:', userId)
-
   try {
     const userDataDoc = await getDoc(doc(db, 'users', userId))
     if (userDataDoc.exists()) {
-      console.log('User data fetched:', userDataDoc.data())
       return userDataDoc.data()
     } else {
       console.error('No user data found for the given ID.')
@@ -45,11 +42,9 @@ export default {
   methods: {
     setSelectedDay(element) {
       this.selectedDay = element.elementData
-      console.log('Current:', element)
     },
     handleTaskStatusChange(index) {
       this.selectedDay.tasks[index].completed = !this.selectedDay.tasks[index].completed
-      console.log('Current tasks', this.selectedDay.tasks)
     },
     handleSendTasksForward() {
       const tasksToSend = this.selectedDay.tasks.filter((task) => !task.completed)
@@ -66,7 +61,6 @@ export default {
       if (fetchedUserData) {
         this.userData = fetchedUserData
         this.calendarData = await generateYearData(fetchedUserData)
-        console.log('Calendar data loaded:', this.calendarData)
       } else {
         console.error('Failed to fetch or process user data.')
         this.calendarData = []
@@ -104,9 +98,9 @@ main {
   height: calc(100vh - 80px);
   width: 100vw;
   overflow-x: hidden;
-  background-color: #ffebd4;
+  background-color: var(--muted-color);
 }
 header {
-  grid-template-columns: 1fr 48px 117px;
+  grid-template-columns: 1fr 50px;
 }
 </style>

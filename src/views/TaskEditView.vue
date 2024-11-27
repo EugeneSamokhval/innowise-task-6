@@ -10,7 +10,7 @@ export default {
     const route = useRoute()
     const taskId = route.query.id
     const userId = route.query.user_id
-    console.log('task: ', taskId, 'user: ', userId)
+
     return { taskId, userId }
   },
   components: { ChoisePopUp },
@@ -50,7 +50,6 @@ export default {
       this.editMode = !this.editMode
     },
     handlePopUpOpennting() {
-      console.log(this.$refs.popup)
       this.$refs.popup.openPopup()
     },
   },
@@ -111,37 +110,37 @@ export default {
   background-color: rgba(0, 0, 0, 0);
   border-style: dashed;
   border-width: 5px;
-  border-color: #651e1e;
+  border-color: var(--secondary-color);
 }
 .edit-page-layout {
-  background-color: #ffebd4;
+  background-color: var(--muted-color);
   width: 100vw;
-  height: 85vh;
+  height: 83vh;
 }
 .task-edit-footer {
-  border-top: 3px solid #ffffff;
-  background-color: #fff2e3;
+  border-top: 3px solid var(--border-color);
+  background-color: var(--background-color);
   display: grid;
   grid-template-columns: 100px 100px 100px 1fr;
   align-items: center;
   justify-items: center;
-  height: auto;
+  height: 80px;
 }
 .task-content {
   font-size: 24px;
-  color: #651e1e;
+  color: var(--secondary-color);
   font-weight: bold;
   width: 100vw;
   height: 73vh;
 }
 .task-title {
   margin: 0px;
-  color: #651e1e;
+  color: var(--secondary-color);
   font-size: 48px;
   font-weight: bold;
   text-align: center;
   align-content: center;
-  border-bottom: 3px solid#ffffff;
+  border-bottom: 3px solid var(--border-color);
   width: 100vw;
   height: 90px;
 }
@@ -152,8 +151,8 @@ export default {
 }
 #current-task-state {
   border-width: 0px;
-  color: #903434;
-  background-color: #d4fdab;
+  color: var(--primary-color);
+  background-color: var(--light-color);
   font-size: 24px;
   font-weight: bold;
   width: 180px;
