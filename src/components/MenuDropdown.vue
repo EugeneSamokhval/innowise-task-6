@@ -66,7 +66,7 @@ export default {
     @click.capture="showMenu"
   />
   <div v-if="visible" class="theme-menu-back-padding" @click="dissmissMenu">
-    <div class="theme-switcher">
+    <div class="theme-switcher" @click.stop>
       <div class="option">
         <input name="white" type="radio" value="white" v-model="current" />
         <label for="white"> White theme</label>
