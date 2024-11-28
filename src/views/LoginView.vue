@@ -6,8 +6,10 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from 'firebase/auth'
+
 export default {
   components: { PopUp },
+
   data() {
     return {
       email: '',
@@ -15,6 +17,7 @@ export default {
       errormessage: '',
     }
   },
+
   methods: {
     signin() {
       signInWithEmailAndPassword(getAuth(), this.email, this.password)
@@ -26,6 +29,7 @@ export default {
           this.$refs.popup.openPopup()
         })
     },
+
     signInWithGoogle() {
       const provider = new GoogleAuthProvider()
       signInWithPopup(getAuth(), provider)
@@ -37,52 +41,34 @@ export default {
           this.$refs.popup.openPopup()
         })
     },
+
     HandleLoginErrors(errorcode) {
-      let currentErrorMessage = ''
+      const errorMessages = new Map([
+        ['auth/wrong-password', 'The password is incorrect'],
+        ['auth/user-not-found', 'No user found with this email'],
+        ['auth/operation-not-allowed', 'This operation is not allowed'],
+        ['auth/invalid-credential', 'The provided credential is invalid'],
+        [
+          'auth/account-exists-with-different-credential',
+          'An account already exists with a different credential',
+        ],
+        ['auth/expired-action-code', 'The action code has expired'],
+        ['auth/invalid-action-code', 'The action code is invalid'],
+        ['auth/app-deleted', 'The Firebase app has been deleted'],
+        ['auth/invalid-email', "Email isn't valid"],
+        ['auth/invalid-password', 'Incorrect password'],
+      ])
+
       errorcode = errorcode.replace('Firebase: Error (', '').replace(').', '')
-      switch (errorcode) {
-        case 'auth/wrong-password':
-          currentErrorMessage = 'The password is incorrect'
-          break
-        case 'auth/user-not-found':
-          currentErrorMessage = 'No user found with this email'
-          break
-        case 'auth/operation-not-allowed':
-          currentErrorMessage = 'This operation is not allowed'
-          break
-        case 'auth/invalid-credential':
-          currentErrorMessage = 'The provided credential is invalid'
-          break
-        case 'auth/account-exists-with-different-credential':
-          currentErrorMessage = 'An account already exists with a different credential'
-          break
-        case 'auth/expired-action-code':
-          currentErrorMessage = 'The action code has expired'
-          break
-        case 'auth/invalid-action-code':
-          currentErrorMessage = 'The action code is invalid'
-          break
-        case 'auth/app-deleted':
-          currentErrorMessage = 'The Firebase app has been deleted'
-          break
-        case 'auth/invalid-email':
-          currentErrorMessage = "Email isn't valid"
-          break
-        case 'auth/invalid-password':
-          currentErrorMessage = 'Incorrect password'
-          break
-        default:
-          currentErrorMessage = 'An unknown error occurred'
-          break
-      }
-      return currentErrorMessage
+
+      return errorMessages.get(errorcode) || 'An unknown error occurred'
     },
   },
 }
 </script>
 
 <template>
-  <div id="login-form">
+  <div class="login-form">
     <label class="registration-login-label" for="user-name-input">Username</label>
     <input class="registration-input" type="text" name="user-name-input" v-model="email" />
     <label class="registration-login-label" for="password-input">Password</label>
@@ -101,7 +87,7 @@ export default {
 </template>
 
 <style scoped>
-#login-form {
+.login-form {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: repeat(2, 41px 60px) 127px;

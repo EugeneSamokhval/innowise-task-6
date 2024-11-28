@@ -1,16 +1,21 @@
 <script>
-import { doc, getDoc, setDoc } from 'firebase/firestore'
+import { doc, setDoc } from 'firebase/firestore'
 import TaskConstructorPopUp from './TaskConstructorPopUp.vue'
 import { db } from '@/main'
+import userDataFetching from '@/utils/dataFetching'
 
 export default {
   props: ['selectedDay'],
+
   components: { TaskConstructorPopUp },
+
   inject: ['user'],
+
+  emits: ['task-status-change', 'send-tasks-forward', 'add-task'],
+
   methods: {
     async changeState(taskId) {
-      const userLink = doc(db, 'users', this.user)
-      const updatedArray = (await getDoc(userLink)).data()
+      const updatedArray = await userDataFetching(this.user)
       const taskIndex = updatedArray.tasks.findIndex((item) => item._id === taskId)
       this.$emit(
         'task-status-change',
@@ -18,15 +23,16 @@ export default {
       )
       updatedArray.tasks[taskIndex].completed = !updatedArray.tasks[taskIndex].completed
 
-      await setDoc(userLink, updatedArray)
+      await setDoc(doc(db, 'users', this.user), updatedArray)
     },
+
     addNewTaskPopupOpen() {
       this.$refs.popup.openPopup()
     },
+
     async sendIncompleteTasksForward() {
       if (this.selectedDay.outdated !== 1) {
-        const currentUserDoc = getDoc(doc(db, 'users', this.user))
-        let currentUserData = (await currentUserDoc).data()
+        let currentUserData = await userDataFetching(this.user)
         const listOfIndexes = []
         const incompleteTasks = this.selectedDay.tasks.filter((task) => !task.completed)
         for (let task of incompleteTasks) {
@@ -38,6 +44,7 @@ export default {
         this.$emit('send-tasks-forward')
       }
     },
+
     async addNewTask(title) {
       try {
         const UniqueId = 'task_' + Date.now()
@@ -50,21 +57,21 @@ export default {
           completed: false,
         }
         this.$emit('add-task', task)
-
-        const userReference = doc(db, 'users', this.user)
-        const userTasks = (await getDoc(userReference)).data()
+        const userTasks = await userDataFetching(this.user)
 
         userTasks['tasks'].push(task)
-        await setDoc(userReference, userTasks)
+        await setDoc(doc(db, 'users', this.user), userTasks)
       } catch (e) {
         console.log(e)
       }
     },
   },
+
   computed: {
     tasksCount() {
       return this.selectedDay ? this.selectedDay.tasks.length : 0
     },
+
     chosenDayString() {
       const monthsMap = new Map([
         [0, 'January'],
@@ -89,15 +96,16 @@ export default {
   },
 }
 </script>
+
 <template>
-  <div id="task-list-layout">
-    <div id="tasks-title">
-      <h2 id="tasks-count">{{ tasksCount }} tasks this day</h2>
-      <h2 id="tasks-date">
+  <div class="task-list-layout">
+    <div class="tasks-title">
+      <h2 class="tasks-count">{{ tasksCount }} tasks this day</h2>
+      <h2 class="tasks-date">
         {{ chosenDayString }}
       </h2>
     </div>
-    <ul id="tasks-list" :selectedDay>
+    <ul class="tasks-list" :selectedDay>
       <li :selectedDay class="task-list-item" v-for="task in selectedDay.tasks" :key="task.id">
         <span :ref="task._id" @click="changeState(task._id)" class="custom-checkbox">
           <img v-show="task.completed" src="../assets/check-bold.svg" />
@@ -110,15 +118,16 @@ export default {
         >
       </li>
     </ul>
-    <button class="flat-home-button" id="transfer-tasks-button" @click="sendIncompleteTasksForward">
+    <button class="flat-home-button transfer-tasks-button" @click="sendIncompleteTasksForward">
       <img src="../assets/arrow-right-thin.svg" />
     </button>
-    <button @click="addNewTaskPopupOpen" class="flat-home-button" id="add-task-button">
+    <button @click="addNewTaskPopupOpen" class="flat-home-button add-task-button">
       <img src="../assets/plus.svg" />
     </button>
   </div>
   <TaskConstructorPopUp @add-new-task="addNewTask" ref="popup"> </TaskConstructorPopUp>
 </template>
+
 <style lang="css" scoped>
 .custom-checkbox {
   display: inline-block;
@@ -129,11 +138,13 @@ export default {
   position: relative;
   background-color: transparent;
 }
+
 .list-item-label {
-  color: var(--secondary-color);
+  color: var(--primary-color);
   font-size: 24px;
   font-weight: bold;
 }
+
 .flat-home-button {
   width: 100px;
   height: 100px;
@@ -141,9 +152,11 @@ export default {
   border-width: 0px;
   cursor: pointer;
 }
+
 .task-list-item::marker {
   content: '';
 }
+
 .task-list-item {
   display: grid;
   align-items: center;
@@ -151,26 +164,31 @@ export default {
   grid-template-columns: 75px 1fr;
   margin: 10px;
 }
+
 .list-item-checkbox {
   display: none;
 }
-#task-list-buttons-container {
+
+.task-list-buttons-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
-#add-task-button {
+
+.add-task-button {
   background-color: var(--accent-color);
   position: fixed;
   right: 15px;
   bottom: 15px;
 }
-#transfer-tasks-button {
+
+.transfer-tasks-button {
   background-color: var(--highlight-color);
   position: fixed;
   bottom: 15px;
   left: 15px;
 }
-#task-list-layout {
+
+.task-list-layout {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 52px 1fr 100px;
@@ -178,25 +196,28 @@ export default {
   height: fit-content;
   overflow-y: hidden;
 }
-#tasks-list {
+
+.tasks-list {
   height: calc(100vh - 355px);
   overflow-x: hidden;
   overflow-y: auto;
 }
-#tasks-title {
+
+.tasks-title {
   display: grid;
   grid-template-columns: 1fr 1fr;
   font-weight: bold;
   font-size: 30px;
 }
-#tasks-count {
+
+.tasks-count {
   text-align: start;
   margin: 0px;
   margin-left: 30px;
   color: var(--accent-color);
 }
 
-#tasks-date {
+.tasks-date {
   text-align: end;
   margin: 3px;
   margin-right: 26px;

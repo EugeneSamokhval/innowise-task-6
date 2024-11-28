@@ -4,12 +4,14 @@ import MenuDropDown from './components/MenuDropdown.vue'
 
 export default {
   components: { RouterView, MenuDropDown },
+
   methods: {
     isNotSignInRoute() {
       if (['Login page', 'Registration page'].includes(this.$route.name)) {
         return false
       } else return true
     },
+
     openMenu() {
       this.$refs.menu.showMenu()
     },
@@ -19,7 +21,7 @@ export default {
 
 <template>
   <header>
-    <h1 id="page-title">{{ $route.name }}</h1>
+    <h1 class="page-title">{{ $route.name }}</h1>
     <MenuDropDown v-if="isNotSignInRoute()" ref="menu"></MenuDropDown>
   </header>
   <RouterView />
@@ -33,7 +35,8 @@ header {
   align-items: center;
   justify-content: center;
 }
-#page-title {
+
+.page-title {
   color: var(--primary-color);
   font-size: 36px;
   margin: 0px;

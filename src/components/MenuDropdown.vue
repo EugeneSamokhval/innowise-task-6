@@ -1,28 +1,31 @@
 <script>
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
-import { getDoc, doc, setDoc } from 'firebase/firestore'
+import { doc, setDoc } from 'firebase/firestore'
 import { db } from '../main'
+import userDataFetching from '@/utils/dataFetching'
 
 export default {
   data() {
     return { visible: false, current: 'warm' }
   },
+
   methods: {
     showMenu() {
       this.visible = true
     },
+
     dissmissMenu() {
       this.visible = false
     },
+
     async updateUserTheme() {
       const id = getAuth().currentUser?.uid
 
-      const userDoc = await getDoc(doc(db, 'users', id))
-      const userData = userDoc.data()
-      userData.theme = this.current
-
+      const userData = await userDataFetching(id)
+      if (this.current) userData.theme = this.current
       await setDoc(doc(db, 'users', id), userData)
     },
+
     signOutHandler() {
       const auth = getAuth()
       if (auth) {
@@ -31,19 +34,19 @@ export default {
       this.$router.push('/login')
     },
   },
+
   watch: {
     current(newTheme) {
       document.documentElement.setAttribute('data-theme', newTheme)
       this.updateUserTheme()
     },
   },
+
   async mounted() {
     const auth = getAuth()
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const userDoc = await getDoc(doc(db, 'users', user.uid))
-
-        const userData = userDoc.data()
+        const userData = await userDataFetching(user.uid)
 
         this.current = userData.theme
 
@@ -53,10 +56,11 @@ export default {
   },
 }
 </script>
+
 <template>
   <img
     src="../assets/menu.svg"
-    id="dropdown-menu"
+    class="dropdown-menu"
     height="48px"
     width="48px"
     @click.capture="showMenu"
@@ -86,6 +90,7 @@ export default {
     </div>
   </div>
 </template>
+
 <style lang="css">
 .theme-switcher {
   position: absolute;
@@ -100,6 +105,7 @@ export default {
   border-radius: 25px;
   padding: 10px;
 }
+
 .option {
   background-color: var(--subtle-color);
   border-radius: 15px;
@@ -111,6 +117,7 @@ export default {
   align-items: center;
   justify-content: center;
 }
+
 .theme-menu-back-padding {
   width: 100vw;
   height: 100vh;
@@ -120,6 +127,7 @@ export default {
   z-index: 98;
   background-color: rgba(0, 0, 0, 0.2);
 }
+
 .log-out-button {
   border-radius: 15px;
   width: 200px;
@@ -133,10 +141,12 @@ export default {
   grid-template-columns: 50px 1fr;
   color: var(--secondary-color);
 }
+
 .log-out-button-text {
   margin: 0px;
 }
-#dropdown-menu {
+
+.dropdown-menu {
   margin-right: 36px;
   margin-left: auto;
   height: 48px;
@@ -145,12 +155,14 @@ export default {
   z-index: 97;
   cursor: pointer;
 }
+
 label {
   font-size: 24px;
   height: 25px;
   width: 150px;
   color: var(--secondary-color);
 }
+
 input {
   height: 24px;
   width: 24px;

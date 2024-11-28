@@ -57,36 +57,25 @@ export default {
     },
 
     HandleRegisterErrors(errorcode) {
-      let currentErrorMessage = errorcode
+      const errorMessages = new Map([
+        ['auth/email-already-exists', 'Email already exists'],
+        ['auth/invalid-email', "Email isn't valid"],
+        ['auth/invalid-password', 'Incorrect password'],
+        ['auth/weak-password', 'Password is too weak. Write a stronger one.'],
+        ['auth/user-disabled', 'Current user has been disabled'],
+        ['auth/operation-not-allowed', 'This operation is not allowed'],
+      ])
+
       errorcode = errorcode.replace('Firebase: Error (', '').replace(').', '')
-      switch (errorcode) {
-        case 'auth/email-already-exists':
-          currentErrorMessage = 'Email already exists'
-          break
-        case 'auth/invalid-email':
-          currentErrorMessage = "Email isn't valid"
-          break
-        case 'auth/invalid-password':
-          currentErrorMessage = 'Incorrect password'
-          break
-        case 'auth/weak-password':
-          currentErrorMessage = 'Password is too weak. Write a stronger one.'
-          break
-        case 'auth/user-disabled':
-          currentErrorMessage = 'Current user has been disabled'
-          break
-        case 'auth/operation-not-allowed':
-          currentErrorMessage = 'This operation is not allowed'
-          break
-      }
-      return currentErrorMessage
+
+      return errorMessages.get(errorcode) || errorcode
     },
   },
 }
 </script>
 
 <template>
-  <div id="registration-form">
+  <div class="registration-form">
     <label class="registration-login-label" for="user-name-input">Email</label>
     <input class="registration-input" type="text" name="user-name-input" v-model="emai" />
     <label class="registration-login-label" for="password-input">Password</label>
@@ -105,7 +94,7 @@ export default {
 </template>
 
 <style scoped>
-#registration-form {
+.registration-form {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: repeat(2, 41px 60px) 127px;

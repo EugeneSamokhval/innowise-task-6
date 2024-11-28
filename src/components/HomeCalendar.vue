@@ -2,76 +2,82 @@
 export default {
   props: ['calendarEntries'],
   async setup() {},
+
   data() {
     return { selectedDay: null }
   },
+
   methods: {
     getWeekStringFromNumber(weekNum) {
-      switch (weekNum) {
-        case 0:
-          return 'Mon'
-        case 1:
-          return 'Tue'
-        case 2:
-          return 'Wed'
-        case 3:
-          return 'Thu'
-        case 4:
-          return 'Fri'
-        case 5:
-          return 'Sat'
-        case 6:
-          return 'Sun'
-        default:
-          return 'Incorrect index'
-      }
+      const weekMap = new Map([
+        [0, 'Mon'],
+        [1, 'Tue'],
+        [2, 'Wed'],
+        [3, 'Thu'],
+        [4, 'Fri'],
+        [5, 'Sat'],
+        [6, 'Sun'],
+      ])
+
+      return weekMap.get(weekNum) || 'Incorrect index'
     },
+
     anyCompletedTasks(entry) {
       for (let task of entry.tasks) {
         if (task.completed) return true
       }
       return false
     },
+
     scrollRightFar() {
-      const calendarElementsContainer = document.getElementById('calendar-days-container')
+      const calendarElementsContainer = this.$refs.entriesContainer
       calendarElementsContainer.scrollLeft += 500
+      if (calendarElementsContainer.scrollLeft === calendarElementsContainer.scrollLeftMax) {
+        this.$emit('add-month-forward')
+        calendarElementsContainer.scrollLeft += 500
+      }
     },
+
     scrollLeftFar() {
       const calendarElementsContainer = document.getElementById('calendar-days-container')
       calendarElementsContainer.scrollLeft -= 500
     },
-    handleSelection(event, entry) {
+
+    handleSelection(id, entry) {
       if (this.selectedDay) {
         this.selectedDay.domElement.classList.remove('selected-entry')
       }
-      this.selectedDay = { domElement: event.target, elementData: entry }
-      event.target.classList.add('selected-entry')
+      this.selectedDay = { domElement: this.$refs[id][0], elementData: entry }
+      this.$refs[id][0].classList.add('selected-entry')
       this.$emit('element-chosen', this.selectedDay)
     },
   },
+
   async mounted() {
-    const calendarElementsContainer = document.getElementById('calendar-days-container')
-    calendarElementsContainer.scrollTo(3905, 0)
+    const calendarElementsContainer = this.$refs.entriesContainer
+    calendarElementsContainer.scrollTo(2400, 0)
     const todayElement = document.getElementsByClassName('current')[0]
     const clickEvent = new Event('click')
     todayElement.dispatchEvent(clickEvent)
   },
 }
 </script>
+
 <template>
-  <div :calendarEntries id="calendar-component">
+  <div :calendarEntries class="calendar-component">
     <img
-      id="calendar-scroll-left"
+      class="calendar-scroll-left"
       src="../assets/menu-left.svg"
       width="48"
       height="48"
       @click="scrollLeftFar"
     />
-    <div id="calendar-days-container">
+    <div :calendarEntries ref="entriesContainer" class="calendar-days-container">
       <template v-for="entry in calendarEntries" :key="entry.id">
         <div
+          :ref="entry.id"
           class="calendar-entry"
-          @click.self="(e) => handleSelection(e, entry)"
+          @click="(e) => handleSelection(entry.id, entry)"
           :class="{ outdated: entry.outdated === 1, current: entry.outdated === -1 }"
         >
           <span class="calendar-entry-day" v-text="entry.day"></span>
@@ -91,7 +97,7 @@ export default {
       </template>
     </div>
     <img
-      id="calendar-scroll-right"
+      class="calendar-scroll-right"
       src="../assets/menu-right.svg"
       width="48"
       height="48"
@@ -99,6 +105,7 @@ export default {
     />
   </div>
 </template>
+
 <style scoped>
 .calendar-entry {
   width: 80px;
@@ -115,18 +122,21 @@ export default {
   grid-template-columns: 1fr;
   grid-template-rows: 1fr 1fr 1fr;
 }
+
 .calendar-entry-day {
   width: 80px;
   height: 36px;
   text-align: center;
   align-content: end;
 }
+
 .calendar-entry-weekday {
   width: 80px;
   height: 21px;
   text-align: center;
   align-content: end;
 }
+
 .calendar-task-completion-status-box {
   height: 23px;
   width: 30px;
@@ -137,13 +147,16 @@ export default {
   align-items: center;
   justify-items: center;
 }
+
 .outdated {
   background-color: var(--dark-color);
 }
+
 .current {
   background-color: var(--info-color);
 }
-#calendar-component {
+
+.calendar-component {
   background-color: var(--subtle-color);
   width: 100vw;
   height: 100px;
@@ -152,7 +165,8 @@ export default {
   grid-template-rows: 1fr;
   align-items: center;
 }
-#calendar-days-container {
+
+.calendar-days-container {
   overflow-x: visible;
   scroll-behavior: smooth;
   width: calc(100vw - 96px);
@@ -165,6 +179,7 @@ export default {
   gap: 5px;
   align-items: center;
 }
+
 .selected-entry {
   border: 3px solid var(--accent-color);
 }

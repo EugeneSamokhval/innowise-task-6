@@ -4,13 +4,16 @@ export default {
   data() {
     return { visible: false }
   },
+
   methods: {
     openPopup() {
       this.visible = true
     },
+
     closePopup() {
       this.visible = false
     },
+
     acceptHandler() {
       this.$emit('accepted', true)
       this.visible = false
@@ -18,6 +21,7 @@ export default {
   },
 }
 </script>
+
 <template>
   <div class="popup-message-overlay" v-if="visible">
     <div class="popup-message">
@@ -27,6 +31,7 @@ export default {
     </div>
   </div>
 </template>
+
 <style scoped lang="css">
 .popup-message-accept-button {
   position: absolute;

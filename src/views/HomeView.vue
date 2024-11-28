@@ -1,10 +1,10 @@
 <script>
 import HomeCalendar from '@/components/HomeCalendar.vue'
-import { generateYearData } from '@/utils/constructCalendar.js'
-import { doc, getDoc } from 'firebase/firestore'
-import { db } from '../main.js'
+import { generateMonthData } from '@/utils/constructCalendar.js'
 import { getAuth } from 'firebase/auth'
 import HomeTaskList from '@/components/HomeTaskList.vue'
+import userDataFetching from '@/utils/dataFetching.js'
+import { addMonth } from '@/utils/constructCalendar'
 
 async function getUserData(userId) {
   if (!userId) {
@@ -13,18 +13,14 @@ async function getUserData(userId) {
   }
 
   try {
-    const userDataDoc = await getDoc(doc(db, 'users', userId))
-    if (userDataDoc.exists()) {
-      return userDataDoc.data()
-    } else {
-      console.error('No user data found for the given ID.')
-      return null
-    }
+    const userDataDoc = await userDataFetching(userId)
+    return userDataDoc
   } catch (error) {
     console.error('Error fetching user data:', error)
     return null
   }
 }
+
 export default {
   components: { HomeCalendar, HomeTaskList },
   data() {
@@ -35,17 +31,21 @@ export default {
       userId: '',
     }
   },
+
   provide() {
     const id = getAuth().currentUser?.uid
     if (id) return { user: getAuth().currentUser?.uid }
   },
+
   methods: {
     setSelectedDay(element) {
       this.selectedDay = element.elementData
     },
+
     handleTaskStatusChange(index) {
       this.selectedDay.tasks[index].completed = !this.selectedDay.tasks[index].completed
     },
+
     handleSendTasksForward() {
       const tasksToSend = this.selectedDay.tasks.filter((task) => !task.completed)
       this.selectedDay.tasks = this.selectedDay.tasks.filter((task) => task.completed)
@@ -53,14 +53,20 @@ export default {
       if (indexOfEntrie < this.calendarData.length)
         for (let task in tasksToSend) this.calendarData[indexOfEntrie + 1].tasks.push(task)
     },
+
+    async addMonthForward() {
+      const newDates = await addMonth(this.calendarData, this.userData)
+      this.calendarData = this.calendarData.concat(newDates)
+    },
   },
+
   async mounted() {
     try {
       const userId = getAuth().currentUser?.uid
       const fetchedUserData = await getUserData(userId)
       if (fetchedUserData) {
         this.userData = fetchedUserData
-        this.calendarData = await generateYearData(fetchedUserData)
+        this.calendarData = await generateMonthData(fetchedUserData)
       } else {
         console.error('Failed to fetch or process user data.')
         this.calendarData = []
@@ -81,6 +87,7 @@ export default {
         v-if="calendarData.length"
         :calendarEntries="calendarData"
         @element-chosen="(item) => setSelectedDay(item)"
+        @add-month-forward="addMonthForward"
       >
       </HomeCalendar>
     </Suspense>
@@ -100,6 +107,7 @@ main {
   overflow-x: hidden;
   background-color: var(--muted-color);
 }
+
 header {
   grid-template-columns: 1fr 50px;
 }

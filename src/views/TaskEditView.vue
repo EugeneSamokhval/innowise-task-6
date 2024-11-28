@@ -1,54 +1,57 @@
 <script>
 import { db } from '@/main'
-import { doc, getDoc, setDoc } from 'firebase/firestore'
+import { doc, setDoc } from 'firebase/firestore'
 import { toValue } from 'vue'
-import { useRoute } from 'vue-router'
 import ChoisePopUp from '@/components/ChoisePopUp.vue'
+import userDataFetching from '@/utils/dataFetching'
 
 export default {
-  setup() {
-    const route = useRoute()
-    const taskId = route.query.id
-    const userId = route.query.user_id
-
-    return { taskId, userId }
-  },
   components: { ChoisePopUp },
   data() {
     return {
       currentTask: { title: '', content: '', completed: false },
       currentTaskPrevousState: Object.freeze({}),
       editMode: false,
+      taskId: '',
+      userId: '',
     }
   },
+
   async mounted() {
-    const docLink = await getDoc(doc(db, 'users', this.userId))
-    const tasksList = await docLink.data().tasks
-    const currentTaskLoaded = tasksList.find((task) => task._id === this.taskId)
+    const taskId = this.$route.query.id
+    const userId = this.$route.query.user_id
+    const userData = await userDataFetching(userId)
+    const tasksList = userData.tasks
+    const currentTaskLoaded = tasksList.find((task) => task._id === taskId)
     this.currentTask = currentTaskLoaded
+    this.userId = userId
+    this.taskId = taskId
   },
+
   methods: {
     async deleteTaskHandler() {
-      const docLink = await getDoc(doc(db, 'users', this.userId))
-      const taskData = docLink.data()
+      const taskData = await userDataFetching(this.userId)
       taskData.tasks = taskData.tasks.filter((task) => task._id !== this.taskId)
+
       await setDoc(doc(db, 'users', this.userId), taskData)
       this.$router.push('/')
     },
+
     handleEditModeChange() {
       this.editMode = !this.editMode
       if (this.currentTaskPrevousState) this.currentTaskPrevousState = toValue(this.currentTask)
       else this.currentTask = this.currentTaskPrevousState
     },
+
     async handleSaveChanges() {
-      const docLink = await getDoc(doc(db, 'users', this.userId))
-      const taskData = docLink.data()
+      const taskData = await userDataFetching(this.userId)
       const index = taskData.tasks.findIndex((task) => task._id === this.taskId)
       taskData.tasks[index] = toValue(this.currentTask)
       await setDoc(doc(db, 'users', this.userId), taskData)
       this.currentTaskPrevousState = toValue(this.currentTask)
       this.editMode = !this.editMode
     },
+
     handlePopUpOpennting() {
       this.$refs.popup.openPopup()
     },
@@ -72,7 +75,7 @@ export default {
       width="48"
       height="48"
       alt="return back"
-      id="return-button"
+      class="return-button"
       src="../assets/arrow_left.svg"
       @click="$router.push('/')"
     />
@@ -80,7 +83,7 @@ export default {
       width="48"
       height="48"
       alt="delete task button"
-      id="delete-button"
+      class="delete-button"
       src="../assets/trash-can-outline.svg"
       @click="handlePopUpOpennting"
     />
@@ -89,22 +92,23 @@ export default {
       width="48"
       height="48"
       alt="edit task button"
-      id="edit-button"
+      class="edit-button"
       src="../assets/pencil-outline.svg"
       @click="handleEditModeChange"
     />
-    <div v-else-if="editMode" id="edit-mode-buttons-box">
-      <img id="save-changes" @click="handleSaveChanges" src="../assets/check-bold.svg" />
-      <img id="cancel-changes" @click="handleEditModeChange" src="../assets/close.svg" />
+    <div v-else-if="editMode" class="edit-mode-buttons-box">
+      <img class="save-changes" @click="handleSaveChanges" src="../assets/check-bold.svg" />
+      <img class="cancel-changes" @click="handleEditModeChange" src="../assets/close.svg" />
     </div>
-    <div v-if="currentTask" id="current-task-state">
+    <div v-if="currentTask" class="current-task-state">
       {{ currentTask.completed ? 'Completed' : 'Incomplete' }}
     </div>
   </footer>
-  <div @accepted="deleteTaskHandler">
-    <ChoisePopUp ref="popup">{{ 'Do you want to delete this task?' }}</ChoisePopUp>
-  </div>
+  <ChoisePopUp @accepted="deleteTaskHandler" ref="popup">{{
+    'Do you want to delete this task?'
+  }}</ChoisePopUp>
 </template>
+
 <style lang="css" scoped>
 .edit-mode {
   background-color: rgba(0, 0, 0, 0);
@@ -112,11 +116,13 @@ export default {
   border-width: 5px;
   border-color: var(--secondary-color);
 }
+
 .edit-page-layout {
   background-color: var(--muted-color);
   width: 100vw;
   height: 83vh;
 }
+
 .task-edit-footer {
   border-top: 3px solid var(--border-color);
   background-color: var(--background-color);
@@ -126,6 +132,7 @@ export default {
   justify-items: center;
   height: 80px;
 }
+
 .task-content {
   font-size: 24px;
   color: var(--secondary-color);
@@ -133,6 +140,7 @@ export default {
   width: 100vw;
   height: 73vh;
 }
+
 .task-title {
   margin: 0px;
   color: var(--secondary-color);
@@ -144,12 +152,14 @@ export default {
   width: 100vw;
   height: 90px;
 }
-#edit-mode-buttons-box {
+
+.edit-mode-buttons-box {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr;
 }
-#current-task-state {
+
+.current-task-state {
   border-width: 0px;
   color: var(--primary-color);
   background-color: var(--light-color);
