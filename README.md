@@ -11,7 +11,7 @@ Task Tracker App is a web application built with Vue 3, using Vite and Firebase.
 Clone the project to your local machine:
 
 ```bash
-git clone https://github.com/your-repo/task-tracker-app.git
+git clone https://github.com/EugeneSamokhval/innowise-task-6.git
 cd task-tracker-app
 ```
 
@@ -68,6 +68,7 @@ This will create an optimized version of the project for production.
 ### Preview the Production Version
 
 ```bash
+npm run build
 npm run preview
 ```
 
@@ -76,6 +77,7 @@ npm run preview
 ## Development Scripts
 
 - **Linting and formatting:**
+
   - Run ESLint to check your code:
 
     ```bash
