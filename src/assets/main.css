@@ -1,0 +1,47 @@
+@import url('base.css');
+@import url('themes.css');
+
+body {
+  margin: 0px;
+  font-family: 'Jaldi';
+  overflow-y: hidden;
+}
+
+img {
+  filter: var(--svg-filter);
+}
+
+.registration-input {
+  width: 500px;
+  height: 60px;
+  border-radius: 15px;
+  background-color: var(--background-color);
+  border-width: 3px;
+  font-size: 24px;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.big-flat-button {
+  width: 100px;
+  height: 100px;
+  border-radius: 35px;
+  border-width: 0px;
+}
+
+.accept-button {
+  background-color: var(--light-color);
+  color: var(--secondary-color);
+  width: 60px;
+  height: 60px;
+  border-radius: 15px;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.registration-login-label {
+  font-weight: bold;
+  font-size: 24px;
+  color: var(--primary-color);
+}
